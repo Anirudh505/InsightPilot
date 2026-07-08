@@ -1,0 +1,14 @@
+- [/] Create folder structure
+- [ ] Initialize `package.json`
+- [ ] Setup `.env.example`
+- [ ] Configure database, env, logger, swagger, cors modules
+- [ ] Implement MongoDB connection logic
+- [ ] Implement Express App setup (middleware, parsers, helmet)
+- [ ] Implement Winston Logging
+- [ ] Implement Health Check APIs
+- [ ] Generate Swagger setup
+- [ ] Implement Global Error Handling and utilities
+- [ ] Prepare express-validator layer
+- [ ] Create placeholder routes
+- [ ] Generate README.md and Dockerfile
+- [ ] Verify execution

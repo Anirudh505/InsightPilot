@@ -1,0 +1,17 @@
+{
+  "name": "@insightpilot/sdk",
+  "version": "1.0.0",
+  "description": "InsightPilot Event Tracking SDK for JavaScript",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'Build script here for webpack/rollup if needed'",
+    "test": "echo 'Tests here'"
+  },
+  "keywords": ["analytics", "tracking", "insightpilot"],
+  "author": "InsightPilot",
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^9.0.0"
+  }
+}
