@@ -14,10 +14,11 @@ InsightPilot is an enterprise-grade product analytics platform that combines cla
 - **AI Product Copilot**: Conversational analyst with built-in data evidence extraction.
 
 - Product screen shots :
+  
 - overview
-- <img width="978" height="615" alt="Screenshot 2026-07-15 at 12 23 08 PM" src="https://github.com/user-attachments/assets/65bb100f-d43d-4a29-b9d3-27c6edd2cb0d" />
+<img width="1280" height="717" alt="Screenshot 2026-07-15 at 4 22 19 PM" src="https://github.com/user-attachments/assets/806a5e01-7c42-49c2-8b09-a2c4bd527c40" />
 
--Funnal
+-Funnel
 <img width="1276" height="716" alt="Screenshot 2026-07-15 at 4 22 55 PM" src="https://github.com/user-attachments/assets/8dea3063-51b0-4729-b160-6ea97199c9d2" />
 
 -Ai Copilot
