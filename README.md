@@ -31,3 +31,4 @@ npm run dev
 ```
 
 For more details, please see the `docs/` folder.
+# InsightPilot
