@@ -85,7 +85,7 @@ export default function AnalyticsWorkspace() {
 
             {/* Right: AI Insights */}
             <motion.div variants={fadeUp} className="lg:col-span-4">
-              <InvestigationInsights metric={metric} />
+              <InvestigationInsights metric={metric} projectId={projectId} />
             </motion.div>
 
           </div>

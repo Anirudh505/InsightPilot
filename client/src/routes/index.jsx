@@ -13,6 +13,12 @@ const FunnelWorkspace = lazy(() => import('../pages/FunnelWorkspace'));
 const RetentionWorkspace = lazy(() => import('../pages/RetentionWorkspace'));
 const FeatureAdoptionWorkspace = lazy(() => import('../pages/FeatureAdoptionWorkspace'));
 const AICopilotWorkspace = lazy(() => import('../pages/AICopilotWorkspace'));
+const RealtimeWorkspace = lazy(() => import('../pages/RealtimeWorkspace'));
+const CohortWorkspace = lazy(() => import('../pages/CohortWorkspace'));
+const SegmentBuilder = lazy(() => import('../pages/SegmentBuilder'));
+const ReportsWorkspace = lazy(() => import('../pages/ReportsWorkspace'));
+const LoginPage = lazy(() => import('../pages/auth/LoginPage'));
+const RegisterPage = lazy(() => import('../pages/auth/RegisterPage'));
 
 // Fallback loader for suspense
 const PageLoader = () => (
@@ -34,15 +40,23 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/workspace/ws_1/project/proj_1" replace />,
+        element: <Navigate to="/login" replace />,
       },
       {
         path: 'login',
-        element: <Navigate to="/workspace/ws_1/project/proj_1" replace />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <LoginPage />
+          </Suspense>
+        ),
       },
       {
         path: 'register',
-        element: <div>Register Page Placeholder</div>,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <RegisterPage />
+          </Suspense>
+        ),
       }
     ],
   },
@@ -103,6 +117,38 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PageLoader />}>
                 <FeatureAdoptionWorkspace />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'analytics/realtime',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <RealtimeWorkspace />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'analytics/cohorts',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <CohortWorkspace />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'analytics/segments',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <SegmentBuilder />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'reports',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <ReportsWorkspace />
               </Suspense>
             ),
           },

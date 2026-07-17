@@ -3,6 +3,7 @@ import { Modal } from '../ui/Modal';
 import { Search, Compass, LogOut, Settings, BarChart2, Filter, Activity, Users, Zap, LayoutDashboard } from 'lucide-react';
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useLogout } from '@/hooks/queries/useAuth';
 import { cn } from '@/lib/utils';
 
 export function CommandPalette({ isOpen, onClose }) {
@@ -11,6 +12,7 @@ export function CommandPalette({ isOpen, onClose }) {
   const inputRef = useRef(null);
   const navigate = useNavigate();
   const params = useParams();
+  const logoutMutation = useLogout();
   
   // Default to a demo workspace if outside context
   const workspaceId = params.workspaceId || 'ws_1';
@@ -46,7 +48,7 @@ export function CommandPalette({ isOpen, onClose }) {
     { id: 'ask-ai', label: 'AI Product Copilot', icon: Compass, category: 'AI Intelligence', action: () => navigate(`${basePath}/copilot`) },
     
     { id: 'go-settings', label: 'Project Settings', icon: Settings, category: 'Configuration', action: () => navigate(`${basePath}/settings`) },
-    { id: 'logout', label: 'Log out', icon: LogOut, category: 'Account', action: () => console.log('Logout') },
+    { id: 'logout', label: 'Log out', icon: LogOut, category: 'Account', action: () => logoutMutation.mutate() },
   ];
 
   const filteredCommands = search 

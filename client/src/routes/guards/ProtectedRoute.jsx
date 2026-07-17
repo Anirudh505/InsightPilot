@@ -1,22 +1,27 @@
 import { Navigate, Outlet } from 'react-router-dom';
-
-/**
- * Placeholder for actual auth logic.
- * In a real implementation, this would read from an AuthContext or React Query hook.
- */
-const useAuth = () => {
-  const token = localStorage.getItem('accessToken');
-  // For UI preview and sprint review, always allow access to the dashboard
-  return { isAuthenticated: true };
-};
+import { useCurrentUser } from '@/hooks/queries/useAuth';
+import { Loader2 } from 'lucide-react';
 
 export function ProtectedRoute() {
-  const { isAuthenticated } = useAuth();
+  const { data: user, isLoading } = useCurrentUser();
+  const token = localStorage.getItem('accessToken');
 
-  if (!isAuthenticated) {
-    // Redirect them to the /login page, but save the current location they were
-    // trying to go to when they were redirected. This allows us to send them
-    // along to that page after they login, which is a nicer user experience.
+  // If there's absolutely no token, redirect immediately
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // If we have a token but are still validating it with the server
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // If the validation failed or no user is returned
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 

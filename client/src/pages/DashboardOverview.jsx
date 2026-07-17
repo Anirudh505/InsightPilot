@@ -71,7 +71,7 @@ export default function DashboardOverview() {
         <KPICard 
           title="Top Feature Uses" 
           value={snapshot.topFeatures?.length > 0 ? snapshot.topFeatures[0].count : 0} 
-          previousValue={0} // Mock previous
+          previousValue={prevSnapshot.topFeatures?.length > 0 ? prevSnapshot.topFeatures[0].count : 0}
           isLoading={isLoadingOverview} 
         />
       </motion.div>

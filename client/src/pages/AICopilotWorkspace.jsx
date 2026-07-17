@@ -9,7 +9,7 @@ export default function AICopilotWorkspace() {
   const { projectId } = useParams();
   
   const { data: history, isLoading: isLoadingHistory } = useCopilotHistory(projectId);
-  const { messages, activeEvidence, isTyping, sendMessage } = useCopilotChat();
+  const { messages, activeEvidence, isTyping, sendMessage } = useCopilotChat(projectId);
 
   return (
     <div className="flex h-[calc(100vh-4rem)] -m-6 lg:-m-8 overflow-hidden bg-background">

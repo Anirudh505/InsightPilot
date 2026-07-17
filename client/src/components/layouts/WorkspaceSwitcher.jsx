@@ -2,12 +2,16 @@ import React from 'react';
 import { Dropdown } from '../ui/Dropdown';
 import { ChevronsUpDown, Check, Building2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export function WorkspaceSwitcher({ currentWorkspaceId }) {
+  const navigate = useNavigate();
+  const { projectId } = useParams();
+
   // In a real app, this data would come from React Query
   const workspaces = [
-    { id: 'ws_1', name: 'Acme Corp' },
-    { id: 'ws_2', name: 'Globex Inc' },
+    { id: 'w_123', name: 'Acme Corp' },
+    { id: 'w_456', name: 'Globex Inc' },
   ];
   
   const currentWorkspace = workspaces.find(w => w.id === currentWorkspaceId) || workspaces[0];
@@ -22,7 +26,7 @@ export function WorkspaceSwitcher({ currentWorkspaceId }) {
         {w.id === currentWorkspaceId && <Check className="h-4 w-4 text-primary" />}
       </div>
     ),
-    onClick: () => console.log(`Switch to ${w.name}`)
+    onClick: () => navigate(`/workspace/${w.id}/project/${projectId || 'p_456'}`)
   }));
 
   items.push({

@@ -1,34 +1,54 @@
 import { useState, useCallback } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '@/api/axios';
 
 /**
- * Mock history data for the Copilot Sidebar
+ * Fetch history data for the Copilot Sidebar
  */
 export function useCopilotHistory(projectId) {
   return useQuery({
     queryKey: ['copilot-history', projectId],
     queryFn: async () => {
-      await new Promise(resolve => setTimeout(resolve, 600));
-      return {
-        pinned: [
-          { id: 'chat_1', title: 'Q3 Churn Analysis', date: '2 days ago' },
-          { id: 'chat_2', title: 'Feature Launch: Export CSV', date: 'Last week' }
-        ],
-        recent: [
-          { id: 'chat_3', title: 'Why did conversion drop in EU?', date: 'Today' },
-          { id: 'chat_4', title: 'Compare Free vs Pro retention', date: 'Yesterday' }
-        ]
-      };
+      try {
+        const { data } = await api.get(`/projects/${projectId}/ai/copilot/history`);
+        const conversations = data.data || [];
+        
+        // Map backend conversations to the sidebar format
+        const recent = conversations.map(c => ({
+          id: c._id,
+          // Use the first user message as the title, or fallback
+          title: c.messages.find(m => m.role === 'user')?.content.substring(0, 30) + '...' || 'New Chat',
+          date: new Date(c.updatedAt).toLocaleDateString()
+        }));
+
+        return {
+          pinned: [], // Feature for future: pinning chats
+          recent: recent.slice(0, 10)
+        };
+      } catch (err) {
+        console.warn('Failed to fetch copilot history, falling back to mock');
+        return {
+          pinned: [
+            { id: 'chat_1', title: 'Q3 Churn Analysis', date: '2 days ago' },
+            { id: 'chat_2', title: 'Feature Launch: Export CSV', date: 'Last week' }
+          ],
+          recent: [
+            { id: 'chat_3', title: 'Why did conversion drop in EU?', date: 'Today' },
+            { id: 'chat_4', title: 'Compare Free vs Pro retention', date: 'Yesterday' }
+          ]
+        };
+      }
     },
     enabled: !!projectId
   });
 }
 
 /**
- * Hook to manage the active chat session state and mock the AI response streaming
+ * Hook to manage the active chat session state and AI response streaming
  */
-export function useCopilotChat() {
+export function useCopilotChat(projectId) {
+  const queryClient = useQueryClient();
+  const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([
     {
       id: 'msg_0',
@@ -63,32 +83,29 @@ export function useCopilotChat() {
         timestamp: new Date().toISOString()
       }]);
 
-      // 3. Mock the streaming response delay
-      const mockResponse = `Based on my analysis of the **Paid Social** segment over the last 30 days:
+      let backendReply = "I'm sorry, I couldn't connect to my brain. Please try again later.";
       
-1. **Conversion Drop**: The funnel completion rate for the EU region dropped by **14.2%** starting last Tuesday.
-2. **Bottleneck**: The primary drop-off occurred at the *Team Invite* step.
-3. **Correlation**: Users who failed to invite a team member within 24 hours had a 65% higher likelihood of churning by Day 7.
+      try {
+        const { data } = await api.post(`/projects/${projectId}/ai/copilot/chat`, {
+          message: userMessage,
+          conversationId: conversationId
+        });
+        
+        backendReply = data.data.reply;
+        if (data.data.conversationId) {
+          setConversationId(data.data.conversationId);
+          queryClient.invalidateQueries(['copilot-history', projectId]);
+        }
+      } catch (err) {
+        console.error("AI Chat Error:", err);
+      }
 
-I recommend implementing an in-app tooltip that highlights the value of inviting a team member immediately after they complete their profile.`;
-
-      const mockEvidence = {
-        metrics: [
-          { label: 'Conversion Drop', value: '-14.2%', trend: 'down' },
-          { label: 'Team Invite Drop-off', value: '68%', trend: 'up' }
-        ],
-        funnelRef: 'f_onboarding',
-        cohortRef: 'c_paid_social',
-        reasoning: 'Detected significant statistical variance in EU segment compared to global baseline beginning Oct 12th.',
-        confidence: 94
-      };
-
-      // Simulate streaming word by word
-      const words = mockResponse.split(' ');
+      // 3. Simulate streaming word by word for UX
+      const words = backendReply.split(' ');
       let currentText = '';
       
       for (let i = 0; i < words.length; i++) {
-        await new Promise(resolve => setTimeout(resolve, 50)); // typing speed
+        await new Promise(resolve => setTimeout(resolve, 30)); // fast typing speed
         currentText += (i === 0 ? '' : ' ') + words[i];
         
         setMessages(prev => prev.map(msg => 
@@ -98,23 +115,24 @@ I recommend implementing an in-app tooltip that highlights the value of inviting
         ));
       }
 
-      // Finish streaming and set evidence
+      // Finish streaming
       setMessages(prev => prev.map(msg => 
         msg.id === assistantMsgId 
           ? { ...msg, isStreaming: false } 
           : msg
       ));
       
-      setActiveEvidence(mockEvidence);
+      // We don't have real evidence generated from the backend yet
+      setActiveEvidence(null);
       
       return true;
     }
   });
 
   const sendMessage = useCallback((text) => {
-    if (!text.trim() || sendMessageMutation.isPending) return;
+    if (!text.trim() || sendMessageMutation.isPending || !projectId) return;
     sendMessageMutation.mutate(text);
-  }, [sendMessageMutation]);
+  }, [sendMessageMutation, projectId]);
 
   return {
     messages,

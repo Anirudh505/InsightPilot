@@ -2,15 +2,65 @@ import { useQuery } from '@tanstack/react-query';
 import api from '@/api/axios';
 
 /**
- * Mocks granular user journey event stream.
+ * Fetches user journey event stream.
  */
 export function useJourneyData(projectId, userId, dateRange) {
   return useQuery({
     queryKey: ['journey', projectId, userId, dateRange],
     queryFn: async () => {
-      // Mock API call delay
-      await new Promise(resolve => setTimeout(resolve, 800));
+      let targetUserId = userId;
       
+      // If no userId is explicitly provided, fetch the first recent user journey
+      if (!targetUserId) {
+        const journeysRes = await api.get(`/projects/${projectId}/journeys?limit=1`);
+        const journeysList = journeysRes.data.data;
+        if (journeysList && journeysList.length > 0) {
+          // Journeys list returns UserJourney objects.
+          // They contain userId or anonymousId
+          targetUserId = journeysList[0].userId || journeysList[0].anonymousId;
+        }
+      }
+
+      if (targetUserId) {
+        try {
+          const pathRes = await api.get(`/projects/${projectId}/journeys/${targetUserId}`);
+          const journeyData = pathRes.data.data; // { user, sessions }
+          
+          if (journeyData && journeyData.sessions) {
+            // Reformat backend sessions to match frontend expectations
+            const formattedSessions = journeyData.sessions.map(s => ({
+              sessionId: s.sessionId,
+              startTime: s.startedAt,
+              endTime: s.endedAt || s.startedAt,
+              events: s.events.map(e => ({
+                id: e._id || `evt_${Math.random()}`,
+                type: e.event === 'pageview' ? 'pageview' : (e.event === 'click' ? 'click' : 'custom'),
+                name: e.event,
+                timestamp: e.timestamp,
+                properties: e.properties || {}
+              }))
+            }));
+            
+            return {
+              user: {
+                id: targetUserId,
+                email: journeyData.user?.email || 'Unknown',
+                name: journeyData.user?.name || 'Anonymous User',
+                firstSeen: journeyData.user?.firstSeenAt,
+                lastSeen: journeyData.user?.lastSeenAt,
+                totalSessions: journeyData.user?.metrics?.totalSessions || formattedSessions.length,
+                totalEvents: journeyData.user?.metrics?.totalEvents || 0,
+                isConverted: false
+              },
+              sessions: formattedSessions
+            };
+          }
+        } catch (error) {
+          console.warn('Failed to fetch journey path, falling back to mock', error);
+        }
+      }
+      
+      // Fallback Mock if backend isn't populated yet
       const generateSession = (sessionId, startTime, eventCount, bounce = false) => {
         const events = [];
         let currentTime = new Date(startTime);
@@ -81,7 +131,7 @@ export function useJourneyData(projectId, userId, dateRange) {
 
       return {
         user: {
-          id: userId || 'usr_unknown',
+          id: targetUserId || 'usr_unknown',
           email: 'sarah.j@example.com',
           name: 'Sarah Jenkins',
           firstSeen: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 30).toISOString(),
@@ -93,6 +143,6 @@ export function useJourneyData(projectId, userId, dateRange) {
         sessions
       };
     },
-    enabled: !!projectId, // Normally we'd require userId, but we'll mock a default one
+    enabled: !!projectId,
   });
 }
