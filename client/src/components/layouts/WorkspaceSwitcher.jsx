@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dropdown } from '../ui/Dropdown';
 import { ChevronsUpDown, Check, Building2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useNavigate, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export function WorkspaceSwitcher({ currentWorkspaceId }) {
@@ -9,10 +11,10 @@ export function WorkspaceSwitcher({ currentWorkspaceId }) {
   const { projectId } = useParams();
 
   // In a real app, this data would come from React Query
-  const workspaces = [
+  const [workspaces, setWorkspaces] = useState([
     { id: 'w_123', name: 'Acme Corp' },
     { id: 'w_456', name: 'Globex Inc' },
-  ];
+  ]);
   
   const currentWorkspace = workspaces.find(w => w.id === currentWorkspaceId) || workspaces[0];
 
@@ -31,7 +33,15 @@ export function WorkspaceSwitcher({ currentWorkspaceId }) {
 
   items.push({
     label: <span className="text-primary font-medium">+ Create Workspace</span>,
-    onClick: () => console.log('Create Workspace')
+    onClick: () => {
+      const name = window.prompt("Enter new workspace name:");
+      if (name && name.trim()) {
+        const newId = 'w_' + Math.floor(Math.random() * 10000);
+        setWorkspaces([...workspaces, { id: newId, name: name.trim() }]);
+        toast.success(`Workspace "${name}" created!`);
+        navigate(`/workspace/${newId}/project/${projectId || 'p_456'}`);
+      }
+    }
   });
 
   return (
