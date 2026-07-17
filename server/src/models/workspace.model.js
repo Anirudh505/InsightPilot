@@ -16,7 +16,6 @@ const workspaceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-workspaceSchema.index({ slug: 1 });
 workspaceSchema.index({ deletedAt: 1 });
 
 export const Workspace = mongoose.model('Workspace', workspaceSchema);

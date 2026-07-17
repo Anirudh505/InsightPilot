@@ -37,11 +37,7 @@ class AuthService {
 
   async loginUser(email, password, ipAddress) {
     // Need to explicitly select password because it's excluded by default in the schema
-    const user = await userRepository.findByEmail(email);
-    
-    // In a real scenario we'd use the repository, but because of `select: false` on password, 
-    // we need to manually query or add a method to the repo. Let's do it cleanly:
-    const userWithPassword = await userRepository.findByEmail(email).select('+password');
+    const userWithPassword = await userRepository.findByEmailWithPassword(email);
 
     if (!userWithPassword) {
       throw new UnauthorizedError('Invalid credentials');

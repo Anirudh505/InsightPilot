@@ -7,7 +7,7 @@ const hourlyAnalyticsSchema = new mongoose.Schema(
     
     // The specific hour this document represents (UTC)
     // Stored as a date object floored to the hour (e.g. 2023-10-25T14:00:00.000Z)
-    hour: { type: Date, required: true, index: true }, 
+    hour: { type: Date, required: true }, 
 
     // Pre-computed Metrics
     totalEvents: { type: Number, default: 0 },

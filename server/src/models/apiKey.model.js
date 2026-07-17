@@ -17,7 +17,6 @@ const apiKeySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-apiKeySchema.index({ publicKey: 1 });
 apiKeySchema.index({ project: 1, status: 1 });
 
 export const ApiKey = mongoose.model('ApiKey', apiKeySchema);

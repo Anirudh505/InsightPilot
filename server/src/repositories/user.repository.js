@@ -14,6 +14,10 @@ class UserRepository {
     return await User.findOne({ email }).where({ deletedAt: null });
   }
 
+  async findByEmailWithPassword(email) {
+    return await User.findOne({ email }).select('+password').where({ deletedAt: null });
+  }
+
   async findByGoogleId(googleId) {
     return await User.findOne({ googleId }).where({ deletedAt: null });
   }
