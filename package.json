@@ -8,6 +8,9 @@
     "server",
     "sdk"
   ],
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "install:all": "npm install",
     "dev:client": "npm run dev --workspace=client",
