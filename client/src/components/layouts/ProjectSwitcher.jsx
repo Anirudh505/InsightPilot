@@ -1,17 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dropdown } from '../ui/Dropdown';
 import { ChevronsUpDown, Check, FolderDot } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export function ProjectSwitcher({ currentProjectId }) {
   const navigate = useNavigate();
   const { workspaceId } = useParams();
 
   // In a real app, this data would come from React Query
-  const projects = [
+  const [projects, setProjects] = useState([
     { id: 'p_456', name: 'Production App' },
     { id: 'p_789', name: 'Marketing Website' },
-  ];
+  ]);
   
   const currentProject = projects.find(p => p.id === currentProjectId) || projects[0];
 
@@ -30,7 +31,15 @@ export function ProjectSwitcher({ currentProjectId }) {
 
   items.push({
     label: <span className="text-primary font-medium">+ Create Project</span>,
-    onClick: () => console.log('Create Project')
+    onClick: () => {
+      const name = window.prompt("Enter new project name:");
+      if (name && name.trim()) {
+        const newId = 'p_' + Math.floor(Math.random() * 10000);
+        setProjects([...projects, { id: newId, name: name.trim() }]);
+        toast.success(`Project "${name}" created!`);
+        navigate(`/workspace/${workspaceId || 'w_123'}/project/${newId}`);
+      }
+    }
   });
 
   return (
