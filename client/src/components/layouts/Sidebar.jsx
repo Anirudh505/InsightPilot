@@ -5,12 +5,22 @@ import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { ChevronLeft, ChevronRight, Triangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { useNotifications } from '@/hooks/queries/useNotifications';
 
 export function Sidebar({ workspaceId, projectId }) {
   const [isCollapsed, setIsCollapsed] = useLocalStorage('insightpilot:sidebar-collapsed', false);
   
   // Base path for all navigation in this context
   const basePath = `/workspace/${workspaceId}/project/${projectId}`;
+
+  const { unreadCount } = useNotifications(projectId);
+
+  const dynamicBottomNav = BOTTOM_NAVIGATION.map(item => {
+    if (item.id === 'notifications') {
+      return { ...item, badge: unreadCount > 0 ? unreadCount : null };
+    }
+    return item;
+  });
 
   return (
     <motion.aside
@@ -47,7 +57,7 @@ export function Sidebar({ workspaceId, projectId }) {
 
       {/* Bottom Navigation & Collapse Toggle */}
       <div className="shrink-0 border-t border-border p-3 space-y-1">
-        {BOTTOM_NAVIGATION.map((item) => (
+        {dynamicBottomNav.map((item) => (
           <SidebarItem
             key={item.id}
             item={item}

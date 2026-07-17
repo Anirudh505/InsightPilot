@@ -17,6 +17,9 @@ const RealtimeWorkspace = lazy(() => import('../pages/RealtimeWorkspace'));
 const CohortWorkspace = lazy(() => import('../pages/CohortWorkspace'));
 const SegmentBuilder = lazy(() => import('../pages/SegmentBuilder'));
 const ReportsWorkspace = lazy(() => import('../pages/ReportsWorkspace'));
+const NotificationsWorkspace = lazy(() => import('../pages/NotificationsWorkspace'));
+const AdminWorkspace = lazy(() => import('../pages/AdminWorkspace'));
+const SettingsWorkspace = lazy(() => import('../pages/SettingsWorkspace'));
 const LoginPage = lazy(() => import('../pages/auth/LoginPage'));
 const RegisterPage = lazy(() => import('../pages/auth/RegisterPage'));
 
@@ -161,16 +164,30 @@ const router = createBrowserRouter([
             ),
           },
           {
+            path: 'notifications',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <NotificationsWorkspace />
+              </Suspense>
+            ),
+          },
+          {
             path: 'settings',
             element: (
-              <RoleGuard allowedRoles={['project_manager', 'admin']} />
+              <Suspense fallback={<PageLoader />}>
+                <SettingsWorkspace />
+              </Suspense>
             ),
-            children: [
-              {
-                index: true,
-                element: <div>Settings Placeholder</div>,
-              }
-            ]
+          },
+          {
+            path: 'admin',
+            element: (
+              <RoleGuard allowedRoles={['project_manager', 'admin']}>
+                <Suspense fallback={<PageLoader />}>
+                  <AdminWorkspace />
+                </Suspense>
+              </RoleGuard>
+            ),
           }
         ]
       }
