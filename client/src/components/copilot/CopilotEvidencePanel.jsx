@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { BrainCircuit, Link2, ExternalLink, Activity, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
-export function CopilotEvidencePanel({ evidence }) {
+export function CopilotEvidencePanel({ evidence, onActionClick, isTyping }) {
   if (!evidence) {
     return (
       <div className="w-full h-full bg-muted/10 border-l border-border p-6 flex flex-col items-center justify-center text-center">
@@ -108,7 +108,12 @@ export function CopilotEvidencePanel({ evidence }) {
               <p className="text-[11px] text-muted-foreground leading-relaxed">
                 Test forcing the team invite modal after profile creation versus a dismissible tooltip.
               </p>
-              <Button size="sm" className="w-full h-8 text-xs">
+              <Button 
+                size="sm" 
+                className="w-full h-8 text-xs" 
+                onClick={() => onActionClick?.("Draft an experiment plan for testing the team invite modal versus a dismissible tooltip to see which yields better conversion.")}
+                disabled={isTyping}
+              >
                 Draft Experiment <ArrowRight className="h-3 w-3 ml-1.5" />
               </Button>
             </CardContent>
