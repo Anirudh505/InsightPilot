@@ -4,11 +4,11 @@ import { Input } from '@/components/ui/Input';
 import { MessageSquare, Plus, Search, Pin, Clock } from 'lucide-react';
 import { Skeleton } from '@/components/ui/Skeleton';
 
-export function CopilotSidebar({ history, isLoading }) {
+export function CopilotSidebar({ history, isLoading, onNewAnalysis }) {
   return (
     <div className="w-full h-full bg-muted/20 border-r border-border flex flex-col">
       <div className="p-4 border-b border-border/50 space-y-4">
-        <Button className="w-full justify-start gap-2" size="sm">
+        <Button className="w-full justify-start gap-2" size="sm" onClick={onNewAnalysis}>
           <Plus className="h-4 w-4" /> New Analysis
         </Button>
         <div className="relative">

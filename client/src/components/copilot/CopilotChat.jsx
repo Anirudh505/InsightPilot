@@ -40,7 +40,7 @@ function ChatMessage({ msg }) {
   );
 }
 
-export function CopilotChat({ messages, onSendMessage, isTyping }) {
+export function CopilotChat({ messages, onSendMessage, isTyping, onResetContext }) {
   const [input, setInput] = useState('');
   const endOfMessagesRef = useRef(null);
 
@@ -70,7 +70,7 @@ export function CopilotChat({ messages, onSendMessage, isTyping }) {
         <h2 className="text-sm font-semibold flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" /> Product Analyst Copilot
         </h2>
-        <Button variant="ghost" size="sm" className="h-8 text-muted-foreground">
+        <Button variant="ghost" size="sm" className="h-8 text-muted-foreground" onClick={onResetContext}>
           <RefreshCcw className="h-3 w-3 mr-2" /> Reset Context
         </Button>
       </div>

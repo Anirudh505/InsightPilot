@@ -61,6 +61,20 @@ export function useCopilotChat(projectId) {
   
   const [activeEvidence, setActiveEvidence] = useState(null);
 
+  const resetChat = useCallback(() => {
+    setConversationId(null);
+    setMessages([
+      {
+        id: `msg_${Date.now()}`,
+        role: 'assistant',
+        content: 'Hi! I am your InsightPilot AI Analyst. What product metrics would you like to explore today?',
+        isStreaming: false,
+        timestamp: new Date().toISOString()
+      }
+    ]);
+    setActiveEvidence(null);
+  }, []);
+
   const sendMessageMutation = useMutation({
     mutationFn: async (userMessage) => {
       // 1. Add user message immediately
@@ -122,8 +136,16 @@ export function useCopilotChat(projectId) {
           : msg
       ));
       
-      // We don't have real evidence generated from the backend yet
-      setActiveEvidence(null);
+      // Set mock evidence to make the Active Context panel functional for the prototype
+      setActiveEvidence({
+        reasoning: "Based on the recent conversation and 7-day aggregated metrics, we identified a correlation with user behavior trends.",
+        confidence: 88,
+        metrics: [
+          { label: 'Total Events', trend: 'up', value: '+14%' },
+          { label: 'Bounce Rate', trend: 'down', value: '-2.1%' },
+          { label: 'Session Length', trend: 'up', value: '+45s' }
+        ]
+      });
       
       return true;
     }
@@ -138,6 +160,7 @@ export function useCopilotChat(projectId) {
     messages,
     activeEvidence,
     isTyping: sendMessageMutation.isPending,
-    sendMessage
+    sendMessage,
+    resetChat
   };
 }

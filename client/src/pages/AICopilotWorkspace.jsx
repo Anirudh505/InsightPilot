@@ -9,14 +9,14 @@ export default function AICopilotWorkspace() {
   const { projectId } = useParams();
   
   const { data: history, isLoading: isLoadingHistory } = useCopilotHistory(projectId);
-  const { messages, activeEvidence, isTyping, sendMessage } = useCopilotChat(projectId);
+  const { messages, activeEvidence, isTyping, sendMessage, resetChat } = useCopilotChat(projectId);
 
   return (
     <div className="flex h-[calc(100vh-4rem)] -m-6 lg:-m-8 overflow-hidden bg-background">
       
       {/* Left Column: Sidebar History (Hidden on mobile by default) */}
       <div className="hidden md:block w-64 shrink-0 border-r border-border">
-        <CopilotSidebar history={history} isLoading={isLoadingHistory} />
+        <CopilotSidebar history={history} isLoading={isLoadingHistory} onNewAnalysis={resetChat} />
       </div>
 
       {/* Center Column: Active Chat Interface */}
@@ -24,7 +24,8 @@ export default function AICopilotWorkspace() {
         <CopilotChat 
           messages={messages} 
           onSendMessage={sendMessage} 
-          isTyping={isTyping} 
+          isTyping={isTyping}
+          onResetContext={resetChat}
         />
       </div>
 
