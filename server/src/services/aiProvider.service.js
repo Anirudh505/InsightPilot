@@ -3,7 +3,7 @@ import logger from '../config/logger.config.js';
 
 class AIProviderService {
   constructor() {
-    this.apiKey = env.openAiApiKey; // Or any generic AI API Key
+    this.apiKey = env.openaiApiKey; // Or any generic AI API Key
     this.baseUrl = env.aiBaseUrl || 'https://api.openai.com/v1'; // Allows plugging in Anthropic/Local proxies
     this.model = env.aiModel || 'gpt-4o';
   }
