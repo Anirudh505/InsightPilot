@@ -30,6 +30,15 @@ class AIController {
     const history = await copilotService.getHistory(req.params.projectId, req.user._id);
     res.status(200).json(new ApiResponse(200, history, 'Chat history fetched'));
   });
+
+  getConversation = AsyncHandler(async (req, res) => {
+    const conversation = await copilotService.getConversation(req.params.conversationId);
+    if (!conversation) {
+      res.status(404).json(new ApiResponse(404, null, 'Conversation not found'));
+      return;
+    }
+    res.status(200).json(new ApiResponse(200, conversation, 'Conversation fetched'));
+  });
 }
 
 export default new AIController();

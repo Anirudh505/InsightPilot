@@ -73,6 +73,10 @@ class CopilotService {
   async getHistory(projectId, userId) {
     return await conversationRepository.findByUserAndProject(userId, projectId);
   }
+
+  async getConversation(conversationId) {
+    return await conversationRepository.findById(conversationId);
+  }
 }
 
 export default new CopilotService();

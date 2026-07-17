@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/Input';
 import { MessageSquare, Plus, Search, Pin, Clock } from 'lucide-react';
 import { Skeleton } from '@/components/ui/Skeleton';
 
-export function CopilotSidebar({ history, isLoading, onNewAnalysis }) {
+export function CopilotSidebar({ history, isLoading, onNewAnalysis, onSelectChat }) {
   return (
     <div className="w-full h-full bg-muted/20 border-r border-border flex flex-col">
       <div className="p-4 border-b border-border/50 space-y-4">
@@ -38,7 +38,11 @@ export function CopilotSidebar({ history, isLoading, onNewAnalysis }) {
                 </h4>
                 <div className="space-y-1">
                   {history.pinned.map(chat => (
-                    <button key={chat.id} className="w-full text-left px-2 py-1.5 rounded-md text-xs hover:bg-accent transition-colors flex flex-col gap-0.5 group">
+                    <button 
+                      key={chat.id} 
+                      onClick={() => onSelectChat?.(chat.id)}
+                      className="w-full text-left px-2 py-1.5 rounded-md text-xs hover:bg-accent transition-colors flex flex-col gap-0.5 group"
+                    >
                       <span className="font-medium text-foreground truncate">{chat.title}</span>
                       <span className="text-[10px] text-muted-foreground">{chat.date}</span>
                     </button>
@@ -55,7 +59,11 @@ export function CopilotSidebar({ history, isLoading, onNewAnalysis }) {
                 </h4>
                 <div className="space-y-1">
                   {history.recent.map(chat => (
-                    <button key={chat.id} className="w-full text-left px-2 py-1.5 rounded-md text-xs hover:bg-accent transition-colors flex flex-col gap-0.5 group">
+                    <button 
+                      key={chat.id} 
+                      onClick={() => onSelectChat?.(chat.id)}
+                      className="w-full text-left px-2 py-1.5 rounded-md text-xs hover:bg-accent transition-colors flex flex-col gap-0.5 group"
+                    >
                       <span className="font-medium text-foreground truncate">{chat.title}</span>
                       <span className="text-[10px] text-muted-foreground">{chat.date}</span>
                     </button>

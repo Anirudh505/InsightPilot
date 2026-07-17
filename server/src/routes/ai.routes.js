@@ -32,4 +32,9 @@ router.get('/copilot/history',
   aiController.getChatHistory
 );
 
+router.get('/copilot/chat/:conversationId',
+  authorizeProjectRoles(ROLES.PROJECT_MANAGER, ROLES.DEVELOPER, ROLES.ANALYST, ROLES.VIEWER),
+  aiController.getConversation
+);
+
 export default router;
