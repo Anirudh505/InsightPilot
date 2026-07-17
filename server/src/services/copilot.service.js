@@ -9,7 +9,7 @@ class CopilotService {
     // 1. Get or create conversation history
     if (conversationId) {
       conversation = await conversationRepository.findById(conversationId);
-      await conversationRepository.addMessage(conversation._id, { role: 'user', content: message });
+      conversation = await conversationRepository.addMessage(conversation._id, { role: 'user', content: message });
     } else {
       conversation = await conversationRepository.createConversation(
         projectId, workspaceId, userId, { role: 'user', content: message }
