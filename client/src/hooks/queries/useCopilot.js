@@ -75,6 +75,33 @@ export function useCopilotChat(projectId) {
     setActiveEvidence(null);
   }, []);
 
+  const [isLoadingChat, setIsLoadingChat] = useState(false);
+
+  const loadChat = useCallback(async (id) => {
+    if (!id || !projectId) return;
+    try {
+      setIsLoadingChat(true);
+      const { data } = await api.get(`/projects/${projectId}/ai/copilot/chat/${id}`);
+      const conv = data.data;
+      if (conv) {
+        setConversationId(conv._id);
+        const mappedMessages = conv.messages.map(m => ({
+          id: m._id,
+          role: m.role,
+          content: m.content,
+          isStreaming: false,
+          timestamp: m.createdAt
+        }));
+        setMessages(mappedMessages);
+        setActiveEvidence(null); // Optional: if evidence is saved, restore it
+      }
+    } catch (err) {
+      console.error('Failed to load chat:', err);
+    } finally {
+      setIsLoadingChat(false);
+    }
+  }, [projectId]);
+
   const sendMessageMutation = useMutation({
     mutationFn: async (userMessage) => {
       // 1. Add user message immediately
@@ -160,7 +187,9 @@ export function useCopilotChat(projectId) {
     messages,
     activeEvidence,
     isTyping: sendMessageMutation.isPending,
+    isLoadingChat,
     sendMessage,
-    resetChat
+    resetChat,
+    loadChat
   };
 }

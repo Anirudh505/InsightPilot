@@ -22,5 +22,7 @@ export const env = {
   emailPass: process.env.EMAIL_PASS,
   cloudinaryUrl: process.env.CLOUDINARY_URL,
   openaiApiKey: process.env.OPENAI_API_KEY,
+  aiBaseUrl: process.env.AI_BASE_URL,
+  aiModel: process.env.AI_MODEL,
   redisUrl: process.env.REDIS_URL
 };

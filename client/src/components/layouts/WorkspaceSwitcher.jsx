@@ -4,7 +4,6 @@ import { ChevronsUpDown, Check, Building2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useNavigate, useParams } from 'react-router-dom';
 
 export function WorkspaceSwitcher({ currentWorkspaceId }) {
   const navigate = useNavigate();
